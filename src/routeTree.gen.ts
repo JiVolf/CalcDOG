@@ -11,11 +11,32 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as SettingsImport } from './routes/settings'
+import { Route as MainmenuImport } from './routes/mainmenu'
+import { Route as HighscoresImport } from './routes/highscores'
 import { Route as GameImport } from './routes/game'
-import { Route as AboutImport } from './routes/about'
+import { Route as ClanImport } from './routes/clan'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
+
+const SettingsRoute = SettingsImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const MainmenuRoute = MainmenuImport.update({
+  id: '/mainmenu',
+  path: '/mainmenu',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const HighscoresRoute = HighscoresImport.update({
+  id: '/highscores',
+  path: '/highscores',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const GameRoute = GameImport.update({
   id: '/game',
@@ -23,9 +44,9 @@ const GameRoute = GameImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const AboutRoute = AboutImport.update({
-  id: '/about',
-  path: '/about',
+const ClanRoute = ClanImport.update({
+  id: '/clan',
+  path: '/clan',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -46,11 +67,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutImport
+    '/clan': {
+      id: '/clan'
+      path: '/clan'
+      fullPath: '/clan'
+      preLoaderRoute: typeof ClanImport
       parentRoute: typeof rootRoute
     }
     '/game': {
@@ -60,6 +81,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GameImport
       parentRoute: typeof rootRoute
     }
+    '/highscores': {
+      id: '/highscores'
+      path: '/highscores'
+      fullPath: '/highscores'
+      preLoaderRoute: typeof HighscoresImport
+      parentRoute: typeof rootRoute
+    }
+    '/mainmenu': {
+      id: '/mainmenu'
+      path: '/mainmenu'
+      fullPath: '/mainmenu'
+      preLoaderRoute: typeof MainmenuImport
+      parentRoute: typeof rootRoute
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -67,42 +109,64 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
+  '/clan': typeof ClanRoute
   '/game': typeof GameRoute
+  '/highscores': typeof HighscoresRoute
+  '/mainmenu': typeof MainmenuRoute
+  '/settings': typeof SettingsRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
+  '/clan': typeof ClanRoute
   '/game': typeof GameRoute
+  '/highscores': typeof HighscoresRoute
+  '/mainmenu': typeof MainmenuRoute
+  '/settings': typeof SettingsRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
+  '/clan': typeof ClanRoute
   '/game': typeof GameRoute
+  '/highscores': typeof HighscoresRoute
+  '/mainmenu': typeof MainmenuRoute
+  '/settings': typeof SettingsRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/game'
+  fullPaths: '/' | '/clan' | '/game' | '/highscores' | '/mainmenu' | '/settings'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/game'
-  id: '__root__' | '/' | '/about' | '/game'
+  to: '/' | '/clan' | '/game' | '/highscores' | '/mainmenu' | '/settings'
+  id:
+    | '__root__'
+    | '/'
+    | '/clan'
+    | '/game'
+    | '/highscores'
+    | '/mainmenu'
+    | '/settings'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AboutRoute: typeof AboutRoute
+  ClanRoute: typeof ClanRoute
   GameRoute: typeof GameRoute
+  HighscoresRoute: typeof HighscoresRoute
+  MainmenuRoute: typeof MainmenuRoute
+  SettingsRoute: typeof SettingsRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AboutRoute: AboutRoute,
+  ClanRoute: ClanRoute,
   GameRoute: GameRoute,
+  HighscoresRoute: HighscoresRoute,
+  MainmenuRoute: MainmenuRoute,
+  SettingsRoute: SettingsRoute,
 }
 
 export const routeTree = rootRoute
@@ -118,18 +182,30 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/about",
-        "/game"
+        "/clan",
+        "/game",
+        "/highscores",
+        "/mainmenu",
+        "/settings"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
-    "/about": {
-      "filePath": "about.tsx"
+    "/clan": {
+      "filePath": "clan.tsx"
     },
     "/game": {
       "filePath": "game.tsx"
+    },
+    "/highscores": {
+      "filePath": "highscores.tsx"
+    },
+    "/mainmenu": {
+      "filePath": "mainmenu.tsx"
+    },
+    "/settings": {
+      "filePath": "settings.tsx"
     }
   }
 }
