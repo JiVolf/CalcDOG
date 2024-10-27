@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
+import { GameProvider } from "./components/GameContext";
 
 // Set up a Router instance
 const router = createRouter({
@@ -20,8 +21,10 @@ const rootElement = document.getElementById("root")!;
 if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
-    <StrictMode>
-      <RouterProvider router={router} />
-    </StrictMode>
+    <GameProvider>
+      <StrictMode>
+        <RouterProvider router={router} />
+      </StrictMode>
+    </GameProvider>
   );
 }

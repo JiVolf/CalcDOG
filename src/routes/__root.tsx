@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState } from "react";
 import {
   Link,
   Outlet,
@@ -7,6 +7,7 @@ import {
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import Button from "../components/Button";
+import { useGame } from "../components/GameContext";
 
 export const Route = createRootRoute({
   component: RootComponent,
@@ -15,6 +16,7 @@ export const Route = createRootRoute({
 function RootComponent() {
   const matchRoute = useMatchRoute();
   const isRoot = matchRoute({ to: "/" });
+  const { startNewGame, continueGame } = useGame();
 
   return (
     <>
@@ -25,8 +27,16 @@ function RootComponent() {
               <Link
                 to="/game"
                 className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
+                onClick={() => startNewGame()}
               >
-                <Button>New Game</Button>
+                <Button>New Game </Button>
+              </Link>
+              <Link
+                to="/game"
+                onClick={() => continueGame(2, 2, 30)}
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
+              >
+                <Button>Continue Game</Button>
               </Link>
               <Link
                 to="/highscores"
@@ -56,7 +66,6 @@ function RootComponent() {
           </div>
         </div>
       )}
-
       <TanStackRouterDevtools position="bottom-right" />
     </>
   );
