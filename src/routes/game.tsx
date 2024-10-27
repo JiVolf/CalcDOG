@@ -3,11 +3,12 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import GameHUD from "../components/gameHUD";
 import GameTile from "../components/GameTile";
+import GameMenuBar from "../components/GameMenuBar";
 import { useGame } from "../components/GameContext";
 
 const Game: React.FC = () => {
   const gridSize = 4;
-  const { level, health, time } = useGame();
+  const { level, health, time, setLevel, setHealth, setTime } = useGame();
 
   const generateRandomTileValue = () => Math.floor(Math.random() * (level + 1));
 
@@ -86,16 +87,68 @@ const Game: React.FC = () => {
     }
   };
 
+  const calculateLevelTime = (level: number) => {
+    const baseTime = 30;
+    const additionalTime = Math.floor(level / 10) * 5;
+    return Math.min(baseTime + additionalTime, 99);
+  };
+
+  useEffect(() => {
+    setTime(calculateLevelTime(level));
+  }, [level]);
+
   const generateGrid = () => {
     const newGrid = initializeGrid();
     setGrid(newGrid);
     setSelectedTiles(Array(4).fill(null));
+    setTime(calculateLevelTime(level));
     localStorage.setItem("grid", JSON.stringify(newGrid));
     localStorage.setItem("selectedTiles", JSON.stringify(Array(4).fill(null)));
   };
 
+  const sumOfSelectedTiles = selectedTiles.reduce((sum, tile) => {
+    return tile ? sum + tile.tileValue : sum;
+  }, 0);
+
+  const isSelectionComplete = selectedTiles.every((tile) => tile !== null);
+  const isSumCorrect = sumOfSelectedTiles === level;
+  const buttonStyles = isSelectionComplete
+    ? isSumCorrect
+      ? "bg-green-500 text-white"
+      : "bg-red-500 text-white"
+    : "bg-gray-300 text-gray-700 cursor-not-allowed";
+
+  const handleSumButtonClick = () => {
+    if (!isSelectionComplete) return;
+
+    if (isSumCorrect) {
+      setLevel((prevLevel) => prevLevel + 1);
+      generateGrid();
+    } else {
+      setHealth((prevHealth) => Math.max(prevHealth - 1, 0));
+      generateGrid();
+    }
+  };
+
+  useEffect(() => {
+    const timerInterval = setInterval(() => {
+      setTime((prevTime) => {
+        if (prevTime === 1) {
+          setHealth((prevHealth) => Math.max(prevHealth - 1, 0));
+          return time;
+        }
+        return prevTime - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timerInterval);
+  }, []);
+
   return (
     <div className="justify-center items-center">
+      <div className="">
+        <GameMenuBar onPause={generateGrid} />
+      </div>
       <div className="">
         <GameHUD health={health} level={level} time={time} />
       </div>
@@ -124,13 +177,22 @@ const Game: React.FC = () => {
             <GameTile
               tileValue={tile?.tileValue ?? null}
               isSelected={tile !== null}
-              onClick={() => handleDeselectTile(index)} // Deselect tile on click
+              onClick={() => handleDeselectTile(index)}
             />
             {index < selectedTiles.length - 1 && (
               <span className="mx-2 text-lg font-bold">+</span>
             )}
           </React.Fragment>
         ))}
+      </div>
+      <div className="flex items-center justify-center mt-4">
+        <button
+          onClick={handleSumButtonClick}
+          className={`px-4 py-2 rounded font-bold ${buttonStyles}`}
+          disabled={!isSelectionComplete}
+        >
+          Sum: {sumOfSelectedTiles}
+        </button>
       </div>
     </div>
   );

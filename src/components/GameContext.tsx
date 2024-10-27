@@ -4,6 +4,9 @@ interface GameState {
   level: number;
   health: number;
   time: number;
+  setLevel: (level: number | ((prevLevel: number) => number)) => void;
+  setHealth: (health: number | ((prevHealth: number) => number)) => void;
+  setTime: (time: number | ((prevTime: number) => number)) => void;
   startNewGame: () => void;
   continueGame: (level: number, health: number, time: number) => void;
 }
@@ -12,6 +15,9 @@ const defaultState: GameState = {
   level: 1,
   health: 3,
   time: 30,
+  setLevel: () => {},
+  setHealth: () => {},
+  setTime: () => {},
   startNewGame: () => {},
   continueGame: () => {},
 };
@@ -31,19 +37,24 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
     setTime(30);
   };
 
-  const continueGame = (
-    savedLevel: number,
-    savedHealth: number,
-    savedTime: number
-  ) => {
+  const continueGame = (savedLevel: number, savedHealth: number) => {
     setLevel(savedLevel);
     setHealth(savedHealth);
-    setTime(savedTime);
+    setTime(30);
   };
 
   return (
     <GameContext.Provider
-      value={{ level, health, time, startNewGame, continueGame }}
+      value={{
+        level,
+        health,
+        time,
+        setLevel,
+        setHealth,
+        setTime,
+        startNewGame,
+        continueGame,
+      }}
     >
       {children}
     </GameContext.Provider>
