@@ -1,70 +1,49 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import React from "react";
-import { useState } from "react";
 import Dropdown from "../components/DropdownMenu";
+import Button from "../components/Button";
+import { useSettings } from "../components/SettingsContext";
 
-function SettingsApp() {
-  // Language selection
-  const [selectLanguage, setSelectLanguage] = React.useState(() => {
-    return localStorage.getItem("selectLanguage") || "Čeština";
-  });
+function SettingsPage() {
+  const navigate = useNavigate();
+  const {
+    nickname,
+    setNickname,
+    soundOn,
+    setSoundOn,
+    language,
+    setLanguage,
+    background,
+    setBackground,
+    country,
+    setCountry,
+  } = useSettings();
 
-  React.useEffect(() => {
-    localStorage.setItem("selectLanguage", selectLanguage);
-  }, [selectLanguage]);
-
-  const handleSelectLanguage = (option: string) => {
-    setSelectLanguage(option);
+  const handleSave = () => {
+    navigate({ to: "/" });
   };
 
-  // Background selection
-  const [selectBackground, setSelectBackground] = React.useState(() => {
-    return localStorage.getItem("selectBackground") || "Tmavé";
-  });
-
-  React.useEffect(() => {
-    localStorage.setItem("selectBackground", selectBackground);
-  }, [selectBackground]);
-
-  const handleSelectBackground = (option: string) => {
-    setSelectBackground(option);
-  };
-
-  // Username field
-
-  const [username, setUsername] = React.useState(() => {
-    return localStorage.getItem("username") || "";
-  });
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newUsername = e.target.value;
-    setUsername(newUsername);
-    localStorage.setItem("username", newUsername);
+    setNickname(e.target.value);
   };
-
-  // Sound toggle
-
-  const [soundOn, setSoundOn] = useState(true);
 
   const handleSoundToggle = () => {
-    const newSoundOn = !soundOn;
-    setSoundOn(newSoundOn);
-    if (newSoundOn) {
-      /* playSound("select"); */
+    setSoundOn(!soundOn);
+    if (!soundOn) {
+      // playSound("select");
     }
   };
 
-  // Country selection
+  const handleSelectLanguage = (option: string) => {
+    setLanguage(option);
+  };
 
-  const [selectCountry, setSelectCountry] = React.useState(() => {
-    return localStorage.getItem("selectCountry") || "Česko";
-  });
-
-  React.useEffect(() => {
-    localStorage.setItem("selectCountry", selectCountry);
-  }, [selectCountry]);
+  const handleSelectBackground = (option: string) => {
+    setBackground(option);
+  };
 
   const handleSelectCountry = (option: string) => {
-    setSelectCountry(option);
+    setCountry(option);
   };
 
   return (
@@ -75,7 +54,7 @@ function SettingsApp() {
         <input
           id="username"
           type="text"
-          value={username}
+          value={nickname}
           onChange={handleUsernameChange}
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           placeholder="Anonymous"
@@ -126,33 +105,34 @@ function SettingsApp() {
         </button>
       </div>
       <div className="flex items-center justify-between w-full">
-        <span className="">Language:</span>
+        <span>Language:</span>
         <Dropdown
           options={["Čeština", "English"]}
-          selected={selectLanguage}
+          selected={language}
           onSelect={handleSelectLanguage}
         />
       </div>
       <div className="flex items-center justify-between w-full">
-        <span className="">Background:</span>
+        <span>Background:</span>
         <Dropdown
           options={["Tmavé", "Modré", "Červené"]}
-          selected={selectBackground}
+          selected={background}
           onSelect={handleSelectBackground}
         />
       </div>
       <div className="flex items-center justify-between w-full">
-        <span className="">Country:</span>
+        <span>Country:</span>
         <Dropdown
           options={["Česko", "United States", "Deutschland"]}
-          selected={selectCountry}
+          selected={country}
           onSelect={handleSelectCountry}
         />
       </div>
+      <Button onClick={handleSave}>Save</Button>
     </div>
   );
 }
 
 export const Route = createFileRoute("/settings")({
-  component: SettingsApp,
+  component: SettingsPage,
 });

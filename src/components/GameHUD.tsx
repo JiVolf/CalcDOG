@@ -24,13 +24,11 @@ const GameHUD: React.FC<GameHUDProps> = ({ health, level, time }) => {
       </div>
 
       <div className="absolute top-4 left-1/2 transform -translate-x-1/2">
-        <div className="text-yellow-500 text-2xl font-bold">Level {level}</div>
+        <div className=" text-2xl font-bold">Level {level}</div>
       </div>
 
       <div className="absolute top-4 right-6">
-        <div className="text-yellow-500 text-2xl font-bold">
-          00:{formatTime(time)}
-        </div>
+        <div className=" text-2xl font-bold">00:{formatTime(time)}</div>
       </div>
     </div>
   );

@@ -4,13 +4,51 @@ import { useState, useEffect } from "react";
 import GameHUD from "../components/gameHUD";
 import GameTile from "../components/GameTile";
 import GameMenuBar from "../components/GameMenuBar";
+import GameOverlay from "../components/GameOverlay";
 import { useGame } from "../components/GameContext";
+import { useSettings } from "../components/SettingsContext";
 
 const Game: React.FC = () => {
   const gridSize = 4;
   const { level, health, time, setLevel, setHealth, setTime } = useGame();
+  const { userID, nickname, country } = useSettings();
 
   const generateRandomTileValue = () => Math.floor(Math.random() * (level + 1));
+
+  const [isPaused, setIsPaused] = useState(false);
+  const [overlayMessage, setOverlayMessage] = useState("");
+
+  const handlePauseToggle = () => {
+    setOverlayMessage("Paused");
+    setIsPaused(!isPaused);
+  };
+
+  const [highestLevel, setHighestLevel] = useState(() => {
+    return Number(localStorage.getItem("highestLevel")) || 0;
+  });
+  const updateHighscore = (newLevel: number) => {
+    const highscoreEntry = {
+      userID,
+      nickname,
+      highestLevel: newLevel - 1,
+      country,
+    };
+    localStorage.setItem(`highscore_${userID}`, JSON.stringify(highscoreEntry));
+  };
+  useEffect(() => {
+    if (level > highestLevel) {
+      setHighestLevel(level);
+      updateHighscore(level);
+      localStorage.setItem("highestLevel", level.toString());
+    }
+  }, [level, highestLevel]);
+
+  useEffect(() => {
+    if (health <= 0) {
+      setOverlayMessage("Game Over");
+      setIsPaused(true);
+    }
+  }, [health]);
 
   const initializeGrid = () => {
     const newGrid = Array(gridSize * gridSize)
@@ -41,10 +79,6 @@ const Game: React.FC = () => {
   useEffect(() => {
     localStorage.setItem("grid", JSON.stringify(grid));
   }, [grid]);
-
-  useEffect(() => {
-    generateGrid();
-  }, []);
 
   const handleTileClick = (index: number) => {
     const newGrid = [...grid];
@@ -104,7 +138,13 @@ const Game: React.FC = () => {
     setTime(calculateLevelTime(level));
     localStorage.setItem("grid", JSON.stringify(newGrid));
     localStorage.setItem("selectedTiles", JSON.stringify(Array(4).fill(null)));
+    setOverlayMessage(`Level ${level}`);
+    setIsPaused(true);
   };
+
+  useEffect(() => {
+    generateGrid();
+  }, [level]);
 
   const sumOfSelectedTiles = selectedTiles.reduce((sum, tile) => {
     return tile ? sum + tile.tileValue : sum;
@@ -142,12 +182,12 @@ const Game: React.FC = () => {
     }, 1000);
 
     return () => clearInterval(timerInterval);
-  }, []);
+  }, [isPaused]);
 
   return (
     <div className="justify-center items-center">
       <div className="">
-        <GameMenuBar onPause={generateGrid} />
+        <GameMenuBar onPause={handlePauseToggle} />
       </div>
       <div className="">
         <GameHUD health={health} level={level} time={time} />
@@ -165,12 +205,6 @@ const Game: React.FC = () => {
         )}
       </div>
 
-      <button
-        onClick={generateGrid}
-        className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-      >
-        Generate Grid
-      </button>
       <div className="flex items-center justify-center mt-4">
         {selectedTiles.map((tile, index) => (
           <React.Fragment key={index}>
@@ -178,6 +212,7 @@ const Game: React.FC = () => {
               tileValue={tile?.tileValue ?? null}
               isSelected={tile !== null}
               onClick={() => handleDeselectTile(index)}
+              variant="buffer"
             />
             {index < selectedTiles.length - 1 && (
               <span className="mx-2 text-lg font-bold">+</span>
@@ -188,12 +223,19 @@ const Game: React.FC = () => {
       <div className="flex items-center justify-center mt-4">
         <button
           onClick={handleSumButtonClick}
-          className={`px-4 py-2 rounded font-bold ${buttonStyles}`}
+          className={`px-6 py-4 rounded font-bold ${buttonStyles}`}
           disabled={!isSelectionComplete}
         >
-          Sum: {sumOfSelectedTiles}
+          Suma: {sumOfSelectedTiles}
         </button>
       </div>
+      {isPaused && (
+        <GameOverlay
+          message={overlayMessage}
+          onClick={() => setIsPaused(false)}
+          isGameOver={health <= 0}
+        />
+      )}
     </div>
   );
 };

@@ -13,7 +13,7 @@ const GameMenuBar: React.FC<MenuBarProps> = ({ onPause }) => {
   };
 
   return (
-    <div className="w-full text-yellow-500 p-4 flex justify-between items-center border-b border-yellow-500 border-solid">
+    <div className="w-full  p-4 flex justify-between items-center border-b border-black border-solid">
       <div className="text-2xl font-bold">Count Up</div>
       <div className="flex text-xl space-x-4">
         <button onClick={handleHomeClick} className="p-2">

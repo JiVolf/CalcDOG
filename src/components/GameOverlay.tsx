@@ -1,17 +1,32 @@
 import React from "react";
+import { useNavigate } from "@tanstack/react-router";
 
 interface GameOverlayProps {
   onClick: () => void;
   message: string;
+  isGameOver: boolean;
 }
 
-const GameOverlay: React.FC<GameOverlayProps> = ({ onClick, message }) => {
+const GameOverlay: React.FC<GameOverlayProps> = ({
+  onClick,
+  message,
+  isGameOver,
+}) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    if (isGameOver) {
+      navigate({ to: "/" });
+    } else {
+      onClick();
+    }
+  };
   return (
     <div
-      className="fixed inset-0 bg-gray-800 bg-opacity-100 flex items-center justify-center"
-      onClick={onClick}
+      className="fixed inset-0 bg-white bg-opacity-100 flex flex-col items-center justify-center space-y-4"
+      onClick={handleClick}
     >
-      <div className="text-white text-4xl">{message}</div>
+      <div className=" text-4xl">{message}</div>
     </div>
   );
 };
