@@ -50,14 +50,14 @@ function SettingsPage() {
     <div className="flex flex-col items-center justify-center bg-gray-100 p-6 space-y-6 rounded-lg shadow-lg max-w-lg mx-auto">
       <h1 className="text-3xl font-bold mb-4">Nastavení</h1>
       <div className="flex items-center justify-between w-full">
-        <span className="mr-4">Username:</span>
+        <span className="mr-4">Jméno:</span>
         <input
           id="username"
           type="text"
           value={nickname}
           onChange={handleUsernameChange}
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          placeholder="Anonymous"
+          placeholder="Player"
         />
       </div>
       <div className="flex items-center justify-between w-full">
@@ -105,7 +105,7 @@ function SettingsPage() {
         </button>
       </div>
       <div className="flex items-center justify-between w-full">
-        <span>Language:</span>
+        <span>Jazyk:</span>
         <Dropdown
           options={["Čeština", "English"]}
           selected={language}
@@ -113,7 +113,7 @@ function SettingsPage() {
         />
       </div>
       <div className="flex items-center justify-between w-full">
-        <span>Background:</span>
+        <span>Téma:</span>
         <Dropdown
           options={["Tmavé", "Modré", "Červené"]}
           selected={background}
@@ -121,14 +121,14 @@ function SettingsPage() {
         />
       </div>
       <div className="flex items-center justify-between w-full">
-        <span>Country:</span>
+        <span>Země:</span>
         <Dropdown
           options={["Česko", "United States", "Deutschland"]}
           selected={country}
           onSelect={handleSelectCountry}
         />
       </div>
-      <Button onClick={handleSave}>Save</Button>
+      <Button onClick={handleSave}>Uložit</Button>
     </div>
   );
 }
